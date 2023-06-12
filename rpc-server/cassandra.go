@@ -20,15 +20,30 @@ func (c *CassandraClient) Init() error {
 		return err
 	}
 	//TODO: remove this print statement
-	print(sess)
+	c.session = sess
 	return nil
 }
 
-func (c *CassandraClient) GetAllMessagesByChatID(ctx context.Context, chatID string) ([]*Message, error) {
+func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string) ([]*Message, error) {
+	query := "SELECT chat_id, message FROM messages WHERE chat_id =" + chatID
+	iter := c.session.Query(query).Iter()
+	scanner := iter.Scanner()
 	var (
 		messages []*Message
 	)
-	fmt.Println("GetAllMessagesByChatID")
+	for scanner.Next() {
+		var (
+			chat_id string
+			message string
+		)
+		temp := &Message{
+			ChatID:  chat_id,
+			Message: message,
+		}
+
+		messages = append(messages, temp)
+	}
+	fmt.Println(messages)
 
 	return messages, nil
 }

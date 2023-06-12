@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	cassandraClient *CassandraClient
+	cassandraClient = &CassandraClient{} // Instantiate the CassandraClient struct
 )
 
 func main() {
