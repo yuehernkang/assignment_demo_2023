@@ -1,0 +1,20 @@
+CREATE KEYSPACE Messages
+    WITH replication = {'class': 'NetworkTopologyStrategy'}
+    AND durable_writes = true;
+
+CREATE TABLE messages.Messages (
+    chat_id TEXT,
+    time TIMESTAMP,
+    message TEXT,
+    author TEXT,
+    PRIMARY KEY(chat_id, time)
+) WITH CLUSTERING ORDER BY (time DESC);
+
+DROP TABLE messages.Messages
+
+SELECT * from messages.Messages where chat_id = 'jack:zack'
+
+INSERT INTO messages.Messages (chat_id, time, message, author) VALUES ('jack:zack', dateof(now()), 'Hello world', 'jack');
+INSERT INTO messages.Messages (chat_id, time, message, author) VALUES ('jack:zack', dateof(now()), 'BYE BYE world', 'zack');
+INSERT INTO messages.Messages (chat_id, time, message, author) VALUES ('tom:jane', dateof(now()), 'hi', 'tom');
+INSERT INTO messages.Messages (chat_id, time, message, author) VALUES ('tom:jane', dateof(now()), 'bye', 'jane');

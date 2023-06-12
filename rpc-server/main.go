@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	rpc "github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc/imservice"
@@ -9,7 +10,19 @@ import (
 	etcd "github.com/kitex-contrib/registry-etcd"
 )
 
+var (
+	cassandraClient *CassandraClient
+)
+
 func main() {
+	err := cassandraClient.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("cassandra well initialized")
+
+	cassandraClient.TestGetMessage()
+
 	r, err := etcd.NewEtcdRegistry([]string{"etcd:2379"}) // r should not be reused.
 	if err != nil {
 		log.Fatal(err)
