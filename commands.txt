@@ -14,6 +14,8 @@ DROP TABLE messages.Messages
 
 SELECT * from messages.Messages where Chat = 'jack:zack'
 
+SELECT Chat, Text FROM messages.Messages WHERE Chat = 'jack:zack'
+
 INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'Hello world', 'jack');
 INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'BYE BYE world', 'zack');
 INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('tom:jane', dateof(now()), 'hi', 'tom');

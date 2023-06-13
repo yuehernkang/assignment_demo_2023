@@ -25,8 +25,8 @@ func (c *CassandraClient) Init() error {
 }
 
 func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string) ([]*Message, error) {
-	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat =" + chatID
-	iter := c.session.Query(query).Iter()
+	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat = ?"
+	iter := c.session.Query(query, chatID).Iter()
 	scanner := iter.Scanner()
 	var (
 		messages []*Message
