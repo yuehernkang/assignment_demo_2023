@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 
 	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
@@ -17,8 +18,28 @@ func (s *IMServiceImpl) Send(ctx context.Context, req *rpc.SendRequest) (*rpc.Se
 }
 
 func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.PullResponse, error) {
+	messages, err := cassandraClient.GetMessagesByChatID(ctx, "jack:zack")
+	if err != nil {
+		return nil, err
+	}
+
+	respMessages := make([]*rpc.Message, 0)
+
+	//TODO: Change all to sender
+	for _, msg := range messages {
+		temp := &rpc.Message{
+			Chat:     req.GetChat(),
+			Text:     msg.Text,
+			Sender:   msg.Sender,
+			SendTime: msg.SendTime,
+		}
+		respMessages = append(respMessages, temp)
+	}
 	resp := rpc.NewPullResponse()
-	resp.Code, resp.Msg = areYouLucky()
+	resp.Messages = respMessages
+	resp.Code = 0
+	resp.Msg = "success"
+	fmt.Println(resp)
 	return resp, nil
 }
 

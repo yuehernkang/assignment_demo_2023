@@ -25,7 +25,7 @@ func (c *CassandraClient) Init() error {
 }
 
 func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string) ([]*Message, error) {
-	query := "SELECT chat_id, message FROM messages WHERE chat_id =" + chatID
+	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat =" + chatID
 	iter := c.session.Query(query).Iter()
 	scanner := iter.Scanner()
 	var (
@@ -33,40 +33,59 @@ func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string
 	)
 	for scanner.Next() {
 		var (
-			chat_id string
-			message string
+			Chat string
+			Text string
 		)
+		err := scanner.Scan(&Chat, &Text)
+		if err != nil {
+			log.Fatal(err)
+			return messages, err
+		}
+
 		temp := &Message{
-			ChatID:  chat_id,
-			Message: message,
+			Chat: Chat,
+			Text: Text,
 		}
 
 		messages = append(messages, temp)
 	}
 	fmt.Println(messages)
-
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+		return messages, err
+	}
 	return messages, nil
 }
 
-func (c *CassandraClient) TestGetMessage() error {
-	query := "SELECT chat_id, message FROM messages WHERE chat_id = 'jack:zack'"
+func (c *CassandraClient) TestGetMessage() ([]*Message, error) {
+	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat = 'jack:zack'"
 	iter := c.session.Query(query).Iter()
 	scanner := iter.Scanner()
+	var (
+		messages []*Message
+	)
 	for scanner.Next() {
 		var (
-			chat_id string
-			message string
+			Chat string
+			Text string
 		)
-		err := scanner.Scan(&chat_id, &message)
+		err := scanner.Scan(&Chat, &Text)
 		if err != nil {
 			log.Fatal(err)
+			return messages, err
 		}
-		fmt.Println("Tweet:", chat_id, message)
+
+		temp := &Message{
+			Chat: Chat,
+			Text: Text,
+		}
+
+		messages = append(messages, temp)
 	}
-	// scanner.Err() closes the iterator, so scanner nor iter should be used afterwards.
+	fmt.Println(messages)
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
-		return nil
+		return messages, err
 	}
-	return nil
+	return messages, nil
 }
