@@ -1,22 +1,24 @@
-CREATE KEYSPACE Messages
+CREATE KEYSPACE ChatApp
     WITH replication = {'class': 'NetworkTopologyStrategy'}
     AND durable_writes = true;
 
-CREATE TABLE messages.Messages (
-    Chat TEXT,
-    SendTime TIMESTAMP,
-    Text TEXT,
-    Sender TEXT,
-    PRIMARY KEY(Chat, SendTime)
-) WITH CLUSTERING ORDER BY (time DESC);
+DROP KEYSPACE messages;
 
-DROP TABLE messages.Messages
+CREATE TABLE ChatApp.messages (
+  Chat TEXT,
+  SendTime TIMESTAMP,
+  Text TEXT,
+  Sender TEXT,
+  PRIMARY KEY(Chat, SendTime)
+) WITH CLUSTERING ORDER BY (SendTime DESC);
 
-SELECT * from messages.Messages where Chat = 'jack:zack'
+DROP TABLE ChatApp.messages
 
-SELECT Chat, Text FROM messages.Messages WHERE Chat = 'jack:zack'
+SELECT * from ChatApp.messages where Chat = 'jack:zack'
 
-INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'Hello world', 'jack');
-INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'BYE BYE world', 'zack');
-INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('tom:jane', dateof(now()), 'hi', 'tom');
-INSERT INTO messages.Messages (Chat, SendTime, Text, Sender) VALUES ('tom:jane', dateof(now()), 'bye', 'jane');
+SELECT Chat, Text FROM ChatApp.messages WHERE Chat = 'jack:zack'
+
+INSERT INTO ChatApp.messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'Hello world', 'jack');
+INSERT INTO ChatApp.messages (Chat, SendTime, Text, Sender) VALUES ('jack:zack', dateof(now()), 'BYE BYE world', 'zack');
+INSERT INTO ChatApp.messages (Chat, SendTime, Text, Sender) VALUES ('tom:jane', dateof(now()), 'hi', 'tom');
+INSERT INTO ChatApp.messages (Chat, SendTime, Text, Sender) VALUES ('tom:jane', dateof(now()), 'bye', 'jane');

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/hertz-contrib/cors"
 	"log"
 	"time"
 
@@ -30,6 +31,9 @@ func main() {
 	)
 
 	h := server.Default(server.WithHostPorts("0.0.0.0:8080"))
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	h.Use(cors.New(config))
 
 	h.GET("/ping", func(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(consts.StatusOK, utils.H{"message": "pong"})

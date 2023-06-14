@@ -4,13 +4,28 @@ import (
 	"context"
 	"fmt"
 	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
+	"time"
 )
 
 // IMServiceImpl implements the last service interface defined in the IDL.
 type IMServiceImpl struct{}
 
 func (s *IMServiceImpl) Send(ctx context.Context, req *rpc.SendRequest) (*rpc.SendResponse, error) {
+	timestamp := time.Now().Unix()
+	message := &Message{
+		Chat:     req.Message.GetChat(),
+		Text:     req.Message.GetText(),
+		Sender:   req.Message.GetSender(),
+		SendTime: timestamp,
+	}
+
+	err := cassandraClient.SaveMessage(ctx, message)
+	if err != nil {
+		return nil, err
+	}
+
 	resp := rpc.NewSendResponse()
+	resp.Code, resp.Msg = 0, "success"
 	return resp, nil
 }
 

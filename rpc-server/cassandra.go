@@ -13,7 +13,7 @@ type CassandraClient struct {
 
 func (c *CassandraClient) Init() error {
 	cluster := gocql.NewCluster("host.docker.internal")
-	cluster.Keyspace = "messages"
+	cluster.Keyspace = "chatapp"
 	cluster.Consistency = gocql.Quorum
 	sess, err := cluster.CreateSession()
 	if err != nil {
@@ -25,7 +25,7 @@ func (c *CassandraClient) Init() error {
 }
 
 func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string) ([]*Message, error) {
-	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat = ?"
+	query := "SELECT Chat, Text, Sender FROM chatapp.messages WHERE Chat = ?"
 	iter := c.session.Query(query, chatID).Iter()
 	scanner := iter.Scanner()
 	var (
@@ -33,18 +33,20 @@ func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string
 	)
 	for scanner.Next() {
 		var (
-			Chat string
-			Text string
+			Chat   string
+			Text   string
+			Sender string
 		)
-		err := scanner.Scan(&Chat, &Text)
+		err := scanner.Scan(&Chat, &Text, &Sender)
 		if err != nil {
 			log.Fatal(err)
 			return messages, err
 		}
 
 		temp := &Message{
-			Chat: Chat,
-			Text: Text,
+			Chat:   Chat,
+			Text:   Text,
+			Sender: Sender,
 		}
 
 		messages = append(messages, temp)
@@ -58,7 +60,7 @@ func (c *CassandraClient) GetMessagesByChatID(ctx context.Context, chatID string
 }
 
 func (c *CassandraClient) TestGetMessage() ([]*Message, error) {
-	query := "SELECT Chat, Text FROM messages.Messages WHERE Chat = 'jack:zack'"
+	query := "SELECT Chat, Text FROM chatapp.messages WHERE Chat = 'jack:zack'"
 	iter := c.session.Query(query).Iter()
 	scanner := iter.Scanner()
 	var (
@@ -88,4 +90,15 @@ func (c *CassandraClient) TestGetMessage() ([]*Message, error) {
 		return messages, err
 	}
 	return messages, nil
+}
+
+func (c *CassandraClient) SaveMessage(ctx context.Context, message *Message) error {
+	fmt.Println(message)
+	query := "INSERT INTO chatapp.messages (Chat, Text, Sender, SendTime) VALUES (?, ?, ?, ?)"
+	err := c.session.Query(query, message.Chat, message.Text, message.Sender, message.SendTime).Exec()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return nil
 }

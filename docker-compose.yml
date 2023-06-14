@@ -10,6 +10,10 @@ services:
     depends_on:
       - etcd
       - cassandra-db
+#  nextjs-app:
+#    build: ./tiktok-tech-immersion-chatapp
+#    ports:
+#      - "3000:3000"
   http-server:
     build: http-server
     ports:
@@ -25,12 +29,16 @@ services:
     command: ["etcd", "--advertise-client-urls", "http://etcd:2379", "--listen-client-urls", "http://0.0.0.0:2379"]
     ports:
       - "2379:2379"
-
   cassandra-db:
     image: cassandra:4.1.2
     ports:
       - "9042:9042"
 
-volumes:
-  kind-config:
-  kind-data:
+  init:
+    image: cassandra:4.1.2
+    depends_on:
+      - cassandra-db
+    restart: "no"
+    entrypoint: ["sh", "-c", "chmod +x /scripts/init.sh && /scripts/init.sh"]
+    volumes:
+      - ./scripts:/scripts
