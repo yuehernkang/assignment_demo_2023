@@ -10,10 +10,10 @@ services:
     depends_on:
       - etcd
       - cassandra-db
-#  nextjs-app:
-#    build: ./tiktok-tech-immersion-chatapp
-#    ports:
-#      - "3000:3000"
+  nextjs-app:
+    build: ./tiktok-tech-immersion-chatapp
+    ports:
+      - "3000:3000"
   http-server-1:
     build: http-server
     ports:
