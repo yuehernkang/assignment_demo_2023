@@ -1,0 +1,14 @@
+{
+  "cssImports": {
+    "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/app/layout.tsx": [
+      "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/node_modules/next/font/google/target.css?{\"path\":\"app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}",
+      "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/app/globals.css"
+    ]
+  },
+  "cssModules": {
+    "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/app/page": [
+      "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/app/globals.css",
+      "/Users/yuehernkang/Development/Projects/tiktok-tech-immersion-2023/assignment_demo_2023/tiktok-tech-immersion-chatapp/node_modules/next/font/google/target.css?{\"path\":\"app/layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"]}],\"variableName\":\"inter\"}"
+    ]
+  }
+}
