@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/hertz-contrib/cors"
 	"log"
+	"os"
 	"time"
 
 	"github.com/TikTokTechImmersion/assignment_demo_2023/http-server/kitex_gen/rpc"
@@ -30,7 +32,12 @@ func main() {
 		client.WithHostPorts("rpc-server:8888"),
 	)
 
-	h := server.Default(server.WithHostPorts("0.0.0.0:8080"))
+	hostPort := os.Getenv("HOST_PORT")
+	if hostPort == "" {
+		hostPort = "8080" // Default value if the environment variable is not set
+	}
+
+	h := server.Default(server.WithHostPorts(fmt.Sprintf("0.0.0.0:%s", hostPort)))
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	h.Use(cors.New(config))

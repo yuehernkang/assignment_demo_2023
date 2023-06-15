@@ -14,13 +14,25 @@ services:
 #    build: ./tiktok-tech-immersion-chatapp
 #    ports:
 #      - "3000:3000"
-  http-server:
+  http-server-1:
     build: http-server
     ports:
-      - "8080:8080"
+      - "5002:5002"
     environment:
       - SERVICE_NAME=http-server
       - SERVICE_TAGS=http
+      - HOST_PORT=5002
+    depends_on:
+      - etcd
+      - rpc-server
+  http-server-2:
+    build: http-server
+    ports:
+      - "5001:5001"
+    environment:
+      - SERVICE_NAME=http-server-2
+      - SERVICE_TAGS=http
+      - HOST_PORT=5001
     depends_on:
       - etcd
       - rpc-server
@@ -33,7 +45,6 @@ services:
     image: cassandra:4.1.2
     ports:
       - "9042:9042"
-
   init:
     image: cassandra:4.1.2
     depends_on:
@@ -42,3 +53,12 @@ services:
     entrypoint: ["sh", "-c", "chmod +x /scripts/init.sh && /scripts/init.sh"]
     volumes:
       - ./scripts:/scripts
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - http-server-1
+      - http-server-2
+
+
