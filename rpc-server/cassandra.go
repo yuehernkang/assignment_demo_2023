@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
+	"time"
 )
 
 type CassandraClient struct {
@@ -95,7 +96,7 @@ func (c *CassandraClient) TestGetMessage() ([]*Message, error) {
 func (c *CassandraClient) SaveMessage(ctx context.Context, message *Message) error {
 	fmt.Println(message)
 	query := "INSERT INTO chatapp.messages (Chat, Text, Sender, SendTime) VALUES (?, ?, ?, ?)"
-	err := c.session.Query(query, message.Chat, message.Text, message.Sender, message.SendTime).Exec()
+	err := c.session.Query(query, message.Chat, message.Text, message.Sender, time.Now()).Exec()
 	if err != nil {
 		log.Fatal(err)
 		return err

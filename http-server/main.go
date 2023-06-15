@@ -66,6 +66,8 @@ func sendMessage(ctx context.Context, c *app.RequestContext) {
 			Sender: req.Sender,
 		},
 	})
+
+	fmt.Println(resp)
 	if err != nil {
 		c.String(consts.StatusInternalServerError, err.Error())
 	} else if resp.Code != 0 {
@@ -73,6 +75,7 @@ func sendMessage(ctx context.Context, c *app.RequestContext) {
 	} else {
 		c.Status(consts.StatusOK)
 	}
+
 }
 
 func pullMessage(ctx context.Context, c *app.RequestContext) {
